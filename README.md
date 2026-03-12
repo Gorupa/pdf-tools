@@ -106,7 +106,7 @@ npx serve .
 
 Made with ❤️ by [gorupa](https://github.com/gorupa)
 
-🌐 **Live at [local-image-compressor.pages.dev](https://pdf-tools-dgs.pages.dev/)**
+🌐 **Live at local-Pdf Tools.pages.dev](https://pdf-tools-dgs.pages.dev/)**
 
 ⭐ If this project helped you, consider giving it a star!
 
