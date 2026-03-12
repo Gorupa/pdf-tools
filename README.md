@@ -1,6 +1,6 @@
 # PDF Tools
 
-[![Live Demo](https://img.shields.io/badge/Live%20Demo-pdf--tools-7c3aed?style=for-the-badge&logo=cloudflare&logoColor=white)](https://pdf-tools-gorupa.pages.dev)
+[![Live Demo](https://img.shields.io/badge/Live%20Demo-pdf--tools-7c3aed?style=for-the-badge&logo=cloudflare&logoColor=white)](https://pdf-tools-dgs.pages.dev/)
 [![MIT License](https://img.shields.io/badge/License-MIT-yellow?style=for-the-badge)](LICENSE)
 [![Open Source](https://img.shields.io/badge/Open%20Source-Yes-6d28d9?style=for-the-badge&logo=github)](https://github.com/gorupa/pdf-tools)
 [![No Server](https://img.shields.io/badge/No%20Server-100%25%20Local-10b981?style=for-the-badge)](https://github.com/gorupa/pdf-tools)
