@@ -102,7 +102,13 @@ npx serve .
 | [MLSU Law Resources](https://mlsu-dhj.pages.dev) | Free notes and papers for MLSU LLB students |
 
 ---
+ <div align="center">
 
-## License
+Made with ❤️ by [gorupa](https://github.com/gorupa)
 
-[MIT](LICENSE) © [gorupa](https://github.com/gorupa)
+🌐 **Live at [local-image-compressor.pages.dev](https://pdf-tools-dgs.pages.dev/)**
+
+⭐ If this project helped you, consider giving it a star!
+
+</div>
+
