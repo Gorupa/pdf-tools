@@ -1,13 +1,316 @@
-<!-- Footer -->
-<footer class="footer">
-    <div>
-        Built with ❤️ using pdf-lib, PDF.js &amp; jsPDF
-        <span class="sep">·</span>
-        <a href="https://github.com/gorupa/pdf-tools" target="_blank" rel="noopener">
-            <svg class="github-icon" viewBox="0 0 24 24"><path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.6[...] gorupa / pdf-tools
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PDF Tools — Compress, Lock & Merge | gorupa</title>
+    <meta name="description" content="Free, private, open source PDF tools. Compress, lock/unlock, and merge PDFs entirely in your browser. No uploads. No ads.">
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css">
+
+    <!-- pdf-lib for lock/unlock/merge -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf-lib/1.17.1/pdf-lib.min.js"></script>
+    <!-- PDF.js for compression rendering -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+    <!-- jsPDF for compression output -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+</head>
+<body>
+
+    <!-- Badge Strip -->
+    <div class="badge-strip">
+        <span class="pill pill-oss"><span class="material-icons-round">code</span> Open Source</span>
+        <span class="pill pill-mit"><span class="material-icons-round">gavel</span> MIT License</span>
+        <span class="pill pill-adfree"><span class="material-icons-round">block</span> Ad-Free</span>
+        <span class="pill pill-local"><span class="material-icons-round">lock</span> 100% Local</span>
+    </div>
+
+    <main class="container">
+
+        <!-- Header -->
+        <div class="header">
+            <div class="hero-icon-wrap">
+                <span class="material-icons-round hero-icon">picture_as_pdf</span>
+            </div>
+            <h1>PDF Tools</h1>
+            <p>Compress, lock, unlock &amp; merge PDFs — entirely in your browser. Zero uploads, zero tracking, zero ads.</p>
+            <a class="tool-link" href="https://local-image-compressor.pages.dev/" target="_blank" rel="noopener">
+                <span class="material-icons-round">compress</span>
+                Also try: Image Compressor
             </a>
-    </div>
-    <div>
+        </div>
+
+        <!-- Tab Bar -->
+        <div class="tab-bar">
+            <button class="tab-btn active" data-tab="compress" onclick="switchTab('compress')">
+                <span class="material-icons-round">compress</span>
+                <span class="tab-label">Compress</span>
+            </button>
+            <button class="tab-btn" data-tab="lock" onclick="switchTab('lock')">
+                <span class="material-icons-round">lock</span>
+                <span class="tab-label">Lock / Unlock</span>
+            </button>
+            <button class="tab-btn" data-tab="merge" onclick="switchTab('merge')">
+                <span class="material-icons-round">merge</span>
+                <span class="tab-label">Merge</span>
+            </button>
+        </div>
+
+        <div class="card">
+
+            <!-- ══════════════════════════════════════
+                 TAB 1: COMPRESS
+            ══════════════════════════════════════ -->
+            <div class="tool-panel active" id="panel-compress">
+
+                <div class="upload-zone" id="compressUploadZone">
+                    <span class="material-icons-round">upload_file</span>
+                    <h3>Drop a PDF or click to browse</h3>
+                    <p>Re-renders pages at lower resolution using PDF.js + jsPDF</p>
+                    <input type="file" id="compressFileInput" accept="application/pdf">
+                </div>
+
+                <div class="controls hidden" id="compressControls">
+                    <div class="file-info">
+                        <span class="material-icons-round">picture_as_pdf</span>
+                        <span id="compressFileName">document.pdf</span>
+                        <span class="badge" id="compressFileSize">0 KB</span>
+                    </div>
+
+                    <div class="slider-container">
+                        <div class="slider-header">
+                            <label for="compressSlider">Compression Quality</label>
+                            <span class="quality-val" id="compressQualityVal">70%</span>
+                        </div>
+                        <input type="range" id="compressSlider" min="10" max="100" step="5" value="70">
+                        <div class="slider-labels">
+                            <span>Smaller file</span>
+                            <span>Higher quality</span>
+                        </div>
+                    </div>
+
+                    <div class="live-preview" id="compressPreview">
+                        <span class="material-icons-round">insights</span>
+                        <div class="preview-text">
+                            <div class="preview-label">Estimated output size</div>
+                            <div class="preview-sizes">
+                                <span class="preview-original" id="compressPreviewOriginal">—</span>
+                                <span class="preview-arrow">→</span>
+                                <span class="preview-estimated" id="compressPreviewEst">calculating…</span>
+                            </div>
+                        </div>
+                        <span class="preview-saving" id="compressPreviewSaving">~0% saved</span>
+                    </div>
+
+                    <button class="btn" id="compressBtn">
+                        <span class="material-icons-round">compress</span> Compress PDF
+                    </button>
+
+                    <div class="progress-wrap hidden" id="compressProgress">
+                        <div class="progress-label" id="compressProgressLabel">Processing page 1…</div>
+                        <div class="progress-bar-track">
+                            <div class="progress-bar-fill" id="compressProgressFill"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="results hidden" id="compressResults">
+                    <div class="success-box">
+                        <div class="success-icon-wrap">
+                            <span class="material-icons-round success-icon">check_circle</span>
+                        </div>
+                        <h3>Compression Complete!</h3>
+                        <p class="sub">Your compressed PDF is ready to download.</p>
+                        <div class="stats">
+                            <div class="stat-box">
+                                <span class="stat-label">Original</span>
+                                <span class="stat-value" id="compressOldSize">0 KB</span>
+                            </div>
+                            <div class="stat-box highlight">
+                                <span class="stat-label">Compressed</span>
+                                <span class="stat-value" id="compressNewSize">0 KB</span>
+                                <span class="stat-savings" id="compressSavings">↓ 0% saved</span>
+                            </div>
+                        </div>
+                        <a href="#" class="download-btn" id="compressDownload" download="compressed.pdf">
+                            <span class="material-icons-round">download</span> Download Compressed PDF
+                        </a>
+                        <button class="btn-text" id="compressReset">↩ Compress another PDF</button>
+                    </div>
+                </div>
+
+            </div><!-- /compress panel -->
+
+
+            <!-- ══════════════════════════════════════
+                 TAB 2: LOCK / UNLOCK
+            ══════════════════════════════════════ -->
+            <div class="tool-panel" id="panel-lock">
+
+                <div class="mode-toggle">
+                    <button class="mode-btn active" id="lockModeBtn" onclick="setLockMode('lock')">
+                        <span class="material-icons-round">lock</span> Lock PDF
+                    </button>
+                    <button class="mode-btn" id="unlockModeBtn" onclick="setLockMode('unlock')">
+                        <span class="material-icons-round">lock_open</span> Unlock PDF
+                    </button>
+                </div>
+
+                <div class="upload-zone" id="lockUploadZone">
+                    <span class="material-icons-round">upload_file</span>
+                    <h3 id="lockUploadTitle">Drop a PDF to lock</h3>
+                    <p>Powered by pdf-lib — runs entirely in your browser</p>
+                    <input type="file" id="lockFileInput" accept="application/pdf">
+                </div>
+
+                <div class="controls hidden" id="lockControls">
+                    <div class="file-info">
+                        <span class="material-icons-round">picture_as_pdf</span>
+                        <span id="lockFileName">document.pdf</span>
+                        <span class="badge" id="lockFileSize">0 KB</span>
+                    </div>
+
+                    <div id="lockFields">
+                        <div class="info-note">
+                            <span class="material-icons-round">info</span>
+                            A password will be required to open this PDF. Make sure to save it somewhere safe — it cannot be recovered.
+                        </div>
+                        <div class="input-group">
+                            <label>Password</label>
+                            <div class="input-wrap">
+                                <input type="password" id="lockPassword" placeholder="Enter a password…" autocomplete="new-password">
+                                <button class="toggle-pw" onclick="togglePw('lockPassword', this)" type="button">
+                                    <span class="material-icons-round">visibility</span>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="input-group">
+                            <label>Confirm Password</label>
+                            <div class="input-wrap">
+                                <input type="password" id="lockPasswordConfirm" placeholder="Repeat the password…" autocomplete="new-password">
+                                <button class="toggle-pw" onclick="togglePw('lockPasswordConfirm', this)" type="button">
+                                    <span class="material-icons-round">visibility</span>
+                                </button>
+                            </div>
+                        </div>
+                        <button class="btn" id="lockBtn" onclick="lockPDF()">
+                            <span class="material-icons-round">lock</span> Lock PDF
+                        </button>
+                    </div>
+
+                    <div id="unlockFields" class="hidden">
+                        <div class="info-note">
+                            <span class="material-icons-round">info</span>
+                            Enter the current password to remove protection. The resulting PDF will have no password.
+                        </div>
+                        <div class="input-group">
+                            <label>Current Password</label>
+                            <div class="input-wrap">
+                                <input type="password" id="unlockPassword" placeholder="Enter the PDF password…">
+                                <button class="toggle-pw" onclick="togglePw('unlockPassword', this)" type="button">
+                                    <span class="material-icons-round">visibility</span>
+                                </button>
+                            </div>
+                        </div>
+                        <button class="btn" id="unlockBtn" onclick="unlockPDF()">
+                            <span class="material-icons-round">lock_open</span> Unlock PDF
+                        </button>
+                    </div>
+
+                    <div id="lockError"></div>
+                </div>
+
+                <div class="results hidden" id="lockResults">
+                    <div class="success-box">
+                        <div class="success-icon-wrap">
+                            <span class="material-icons-round success-icon" id="lockResultIcon">check_circle</span>
+                        </div>
+                        <h3 id="lockResultTitle">PDF Locked!</h3>
+                        <p class="sub" id="lockResultSub">Your password-protected PDF is ready.</p>
+                        <a href="#" class="download-btn" id="lockDownload" download="protected.pdf">
+                            <span class="material-icons-round">download</span> <span id="lockDownloadLabel">Download Protected PDF</span>
+                        </a>
+                        <button class="btn-text" id="lockReset">↩ Process another PDF</button>
+                    </div>
+                </div>
+
+            </div><!-- /lock panel -->
+
+
+            <!-- ══════════════════════════════════════
+                 TAB 3: MERGE
+            ══════════════════════════════════════ -->
+            <div class="tool-panel" id="panel-merge">
+
+                <div class="upload-zone" id="mergeUploadZone">
+                    <span class="material-icons-round">upload_file</span>
+                    <h3>Drop PDFs or click to browse</h3>
+                    <p>Select 2 or more PDF files to merge into one</p>
+                    <input type="file" id="mergeFileInput" accept="application/pdf" multiple>
+                </div>
+
+                <div class="controls hidden" id="mergeControls">
+                    <div class="info-note">
+                        <span class="material-icons-round">drag_indicator</span>
+                        Drag items to reorder pages. The top file will be first in the merged PDF.
+                    </div>
+
+                    <div class="merge-queue" id="mergeQueue"></div>
+
+                    <button class="add-more-btn" id="mergeAddBtn">
+                        <span class="material-icons-round">add</span> Add more PDFs
+                        <input type="file" id="mergeAddInput" accept="application/pdf" multiple style="display:none">
+                    </button>
+
+                    <button class="btn" id="mergeBtn" onclick="mergePDFs()">
+                        <span class="material-icons-round">merge</span> Merge PDFs
+                    </button>
+
+                    <div class="progress-wrap hidden" id="mergeProgress">
+                        <div class="progress-label" id="mergeProgressLabel">Merging…</div>
+                        <div class="progress-bar-track">
+                            <div class="progress-bar-fill" id="mergeProgressFill"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="results hidden" id="mergeResults">
+                    <div class="success-box">
+                        <div class="success-icon-wrap">
+                            <span class="material-icons-round success-icon">check_circle</span>
+                        </div>
+                        <h3>Merge Complete!</h3>
+                        <p class="sub" id="mergeResultSub">Your merged PDF is ready.</p>
+                        <a href="#" class="download-btn" id="mergeDownload" download="merged.pdf">
+                            <span class="material-icons-round">download</span> Download Merged PDF
+                        </a>
+                        <button class="btn-text" id="mergeReset">↩ Merge more PDFs</button>
+                    </div>
+                </div>
+
+            </div><!-- /merge panel -->
+
+        </div><!-- /card -->
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div>
+            Built with ❤️ using pdf-lib, PDF.js &amp; jsPDF
+            <span class="sep">·</span>
+            <a href="https://github.com/gorupa/pdf-tools" target="_blank" rel="noopener">
+                <svg class="github-icon" viewBox="0 0 24 24"><path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"/></svg>
+                gorupa / pdf-tools
+            </a>
+        </div>
+        <div>
+            
         No ads · No tracking · No server uploads
-    </div>
-</footer>
+        </div>
+    </footer>
+
+    <script src="js/script.js"></script>
+</body>
+</html>
